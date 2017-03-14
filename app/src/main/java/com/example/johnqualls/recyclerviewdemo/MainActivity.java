@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ public class MainActivity extends Activity implements Button.OnClickListener{
     private List<String> dataset;
     private Button addItem,
                    removeItem;
+    private boolean clickable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class MainActivity extends Activity implements Button.OnClickListener{
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
         // Register buttons
+        clickable = true;
         addItem = (Button) findViewById(R.id.addItem);
         removeItem = (Button) findViewById(R.id.removeItem);
         addItem.setOnClickListener(this);
@@ -48,27 +51,38 @@ public class MainActivity extends Activity implements Button.OnClickListener{
         dataset.add("Jim");
 
         // specify an adapter (see also next example)
-        mAdapter = new TestAdapter(dataset);
+        mAdapter = new TestAdapter(dataset, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.addItem) {
-            dataset.add("Event" + count);
-            dataset.add("Name" + count);
-            mAdapter.notifyDataSetChanged();
-            count++;
-            Toast.makeText(this, "Add Item!", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        if(clickable) {
+            clickable = false;
             int position = dataset.size() - 1;
-            dataset.remove(position);
-            mRecyclerView.removeViewAt(position);
-            mAdapter.notifyItemRemoved(position);
-            mAdapter.notifyItemRangeChanged(position, dataset.size());
-            Toast.makeText(this, "Remove Item!", Toast.LENGTH_SHORT).show();
+            if(view.getId() == R.id.addItem) {
+                dataset.add("Event" + count);
+                dataset.add("Name" + count);
+                mAdapter.notifyItemRangeInserted(position, 2);
+                count++;
+                Log.i(MainActivity.class.getName(), "AddItem Clicked");
+            }
+            else {
+                dataset.remove(position);
+                dataset.remove(position - 1);
+                mRecyclerView.removeViewAt(position);
+                mAdapter.notifyItemRangeRemoved(position, 2);
+                Log.i(MainActivity.class.getName(), "RemoveItem Clicked");
+            }
         }
+    }
+
+    public boolean isClickable() {
+        return clickable;
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
     }
 }

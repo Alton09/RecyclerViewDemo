@@ -1,8 +1,11 @@
 package com.example.johnqualls.recyclerviewdemo;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +17,7 @@ import java.util.List;
 
 public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
     private List<String> mDataset;
+    private MainActivity activity;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -29,8 +33,9 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public TestAdapter(List<String> myDataset) {
+    public TestAdapter(List<String> myDataset, MainActivity activity) {
         mDataset = myDataset;
+        this.activity = activity;
     }
 
     // Create new views (invoked by the layout manager)
@@ -50,10 +55,12 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if(position > 0 && position < mDataset.size() - 1) {
+        if(position == 0 | position % 2 == 0) {
+            Log.i(TestAdapter.class.getName(), "onBindViewHolder()");
             ((TextView) holder.mLinearLayout.getChildAt(0)).setText(mDataset.get(position));
             ((TextView) holder.mLinearLayout.getChildAt(1)).setText(mDataset.get(position + 1));
         }
+        activity.setClickable(true);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
