@@ -60,11 +60,11 @@ public class MainActivity extends Activity implements Button.OnClickListener{
     public void onClick(View view) {
         if(clickable) {
             clickable = false;
-            int position = dataset.size() - 1;
+            int position = dataset.size() + 1;
             if(view.getId() == R.id.addItem) {
                 dataset.add("Event" + count);
                 dataset.add("Name" + count);
-                mAdapter.notifyItemRangeInserted(position, 2);
+                mAdapter.notifyItemRangeInserted(position, 1);
                 count++;
                 Log.i(MainActivity.class.getName(), "AddItem Clicked");
             }
