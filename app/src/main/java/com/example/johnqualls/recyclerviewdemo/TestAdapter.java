@@ -1,6 +1,7 @@
 package com.example.johnqualls.recyclerviewdemo;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -13,9 +14,7 @@ import java.util.List;
  */
 
 public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
-    private int dataCount;
-    private List<String> mDataset;
-    private MainActivity activity;
+    private List<Item> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -30,9 +29,8 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public TestAdapter(List<String> myDataset, MainActivity activity) {
+    public TestAdapter(List<Item> myDataset) {
         mDataset = myDataset;
-        this.activity = activity;
     }
 
     // Create new views (invoked by the layout manager)
@@ -52,16 +50,11 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        int namePosition = dataCount,
-            valuePosition = dataCount + 1;
+        Item item = mDataset.get(position);
 
-        if(dataCount < mDataset.size()) {
-            ((TextView) holder.mLinearLayout.getChildAt(0)).setText(mDataset.get(namePosition));
-            ((TextView) holder.mLinearLayout.getChildAt(1)).setText(mDataset.get(valuePosition));
-
-            dataCount += 2;
-            activity.setClickable(true);
-        }
+        Log.i(TestAdapter.class.getName(), "onBindViewHolder() -> PopulateView");
+        ((TextView) holder.mLinearLayout.getChildAt(0)).setText(item.getKey());
+        ((TextView) holder.mLinearLayout.getChildAt(1)).setText(item.getValue());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -69,4 +62,5 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
     public int getItemCount() {
         return mDataset.size();
     }
+
 }
