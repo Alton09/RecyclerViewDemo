@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements Button.OnClickListener{
         count = 1;
 
         // specify an adapter (see also next example)
-        mAdapter = new TestAdapter(dataset, this);
+        mAdapter = new TestAdapter(dataset);
         mRecyclerView.setAdapter(mAdapter);
     }
 
