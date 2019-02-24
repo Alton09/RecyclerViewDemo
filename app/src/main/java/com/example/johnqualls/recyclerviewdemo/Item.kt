@@ -1,3 +1,5 @@
 package com.example.johnqualls.recyclerviewdemo
 
-data class Item(val key: String, val value: String)
+import java.util.*
+
+data class Item(var name: String, var id: UUID = UUID.randomUUID())

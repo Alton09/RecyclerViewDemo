@@ -2,61 +2,43 @@ package com.example.johnqualls.recyclerviewdemo
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import android.widget.Button
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : Activity(), View.OnClickListener{
-    private var count: Int = 0
-    private var mRecyclerView: RecyclerView? = null
-    private var mAdapter: TestAdapter? = null
-    private var mLayoutManager: RecyclerView.LayoutManager? = null
-    private var dataset: MutableList<Item> = mutableListOf(Item("Key0", "Value0"))
-    private var addItem: Button? = null
-    private var removeItem: Button? = null
-    private var clickable: Boolean = false
+    private var count: Int = 1
+    private var dataset: MutableList<Item> = mutableListOf(Item("Item1"), Item("Item2"), Item("Item3"))
+    private val adapter: TestAdapter
+
+    init {
+        val viewHolderCallback = { adapter: TestAdapter, position: Int ->
+            dataset.removeAt(position)
+            adapter.swap(dataset.deepCopy())
+        }
+        adapter = TestAdapter(dataset.deepCopy(), viewHolderCallback)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mRecyclerView = findViewById(R.id.my_recycler_view) as RecyclerView
-
-        // Register buttons
-        clickable = true
-        addItem = findViewById(R.id.addItem) as Button
-        removeItem = findViewById(R.id.removeItem) as Button
-        addItem!!.setOnClickListener(this)
-        removeItem!!.setOnClickListener(this)
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView!!.setHasFixedSize(true)
-
-        // use a linear layout manager
-        mLayoutManager = LinearLayoutManager(this)
-        mRecyclerView!!.layoutManager = mLayoutManager
-
-        // Counter for newly added Items
-        count = 1
-
-        // specify an adapter (see also next example)
-        mAdapter = TestAdapter(dataset)
-        mRecyclerView!!.adapter = mAdapter
+        add_item.setOnClickListener(this)
+        replace_items.setOnClickListener(this)
+        my_recycler_view.layoutManager = LinearLayoutManager(this)
+        my_recycler_view.adapter = adapter
     }
 
 
     override fun onClick(view: View) {
-        if (view.id == R.id.addItem) {
-            val item = Item("Key$count", "Value$count")
-            dataset!!.add(item)
-            mAdapter!!.notifyItemRangeInserted(dataset!!.size - 1, 1)
+        if (view.id == R.id.add_item) {
+            val item = Item("Item $count")
+            dataset.add(0, item)
             count++
-        } else if (dataset!!.size > 0) {
-            val removePosition = dataset!!.size - 1
-            dataset!!.removeAt(removePosition)
-            mRecyclerView!!.removeViewAt(removePosition)
-            count--
+        } else { // replace all
+            dataset.forEach {
+                it.name = "Item ${++count}"
+            }
         }
+        adapter.swap(dataset)
     }
 }
