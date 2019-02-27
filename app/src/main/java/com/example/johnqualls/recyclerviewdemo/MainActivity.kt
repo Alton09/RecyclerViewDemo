@@ -14,9 +14,10 @@ class MainActivity : Activity(), View.OnClickListener{
     init {
         val viewHolderCallback = { adapter: TestAdapter, position: Int ->
             dataset.removeAt(position)
-            adapter.swap(dataset.deepCopy())
+            adapter.submitList(dataset.deepCopy())
         }
-        adapter = TestAdapter(dataset.deepCopy(), viewHolderCallback)
+        adapter = TestAdapter(viewHolderCallback)
+        adapter.submitList(dataset.deepCopy())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,6 @@ class MainActivity : Activity(), View.OnClickListener{
         my_recycler_view.adapter = adapter
     }
 
-
     override fun onClick(view: View) {
         if (view.id == R.id.add_item) {
             val item = Item("Item $count")
@@ -39,6 +39,6 @@ class MainActivity : Activity(), View.OnClickListener{
                 it.name = "Item ${++count}"
             }
         }
-        adapter.swap(dataset)
+        adapter.submitList(dataset.deepCopy())
     }
 }
